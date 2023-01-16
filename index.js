@@ -38,7 +38,7 @@ app.get('/callback', async (req, res) => {
   // exchange authorization code for access token
   const body = {
     grant_type: 'authorization_code',
-    code,
+    code: code,
     redirect_uri: "https://loginwithzbd.glitch.me/callback",
     code_verifier: codeVerifier,
     client_id: "209b5bac-0636-4d5e-8398-8e8a21382999",
