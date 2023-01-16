@@ -39,7 +39,7 @@ app.get('/callback', async (req, res) => {
   const body = {
     grant_type: 'authorization_code',
     code,
-    redirect_uri: "http://localhost:3000/callback",
+    redirect_uri: "https://loginwithzbd.glitch.me/callback",
     code_verifier: codeVerifier,
     client_id: "209b5bac-0636-4d5e-8398-8e8a21382999",
     client_secret: "e2d5dcd6-ff46-4058-8c04-a979aea70e47"
