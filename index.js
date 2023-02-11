@@ -52,7 +52,7 @@ app.get('/callback', async (req, res) => {
     redirect_uri: `${process.env.HOST_URI}/callback`,
     code_verifier: codeVerifier,
     client_id: process.env.ZEBEDEE_CLIENT_ID,
-    client_secret: "e3f731ea-128d-4f3b-9eff-f2cdefe05421"
+    client_secret: process.env.ZEBEDEE_CLIENT_SECRET
   };
   try {
     const response = await fetch('https://api.zebedee.io/v0/oauth2/token', {
@@ -71,7 +71,7 @@ app.get('/callback', async (req, res) => {
       }
     });
     const gamertagData = await gamertagResponse.json();
-    console.log(gamertagData);
+    console.log(gamertagData.data);
     const gamertag = gamertagData.data.gamertag;
     res.redirect(`/?gamertag=${gamertag}`);
   } catch (err) {
@@ -81,10 +81,10 @@ app.get('/callback', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-  if (req.query.gamertag === null) {
+  if (!req.query.gamertag) {
     res.redirect(`/login`);
   } else {
-    res.send(`Hey, ${req.query.gamertag}! This is an example so you can modify this code like line 76 for a redirect with the gamertag, );
+    res.send(`Hey, ${req.query.gamertag}! This is an example so you can modify this code like line 76 for a redirect with the gamertag, or even this message!`);
   }
 });
 
