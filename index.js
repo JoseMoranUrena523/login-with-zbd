@@ -73,7 +73,8 @@ app.get('/callback', async (req, res) => {
     const gamertagData = await gamertagResponse.json();
     console.log(gamertagData.data);
     const gamertag = gamertagData.data.gamertag;
-    res.redirect(`/?gamertag=${gamertag}`);
+    // res.redirect(`/?gamertag=${gamertag}`);
+    res.redirect(`https://www.2048bitcoin.world/?gamertag=${gamertag}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error exchanging code for access token');
