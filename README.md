@@ -16,6 +16,8 @@ To try authenticating with ZEBEDEE, create environment variables on Glitch/Repl.
 - ZEBEDEE_CLIENT_SECRET
 - HOST_URI
 
+Note: `HOST_URI` should be like "https://example.com", without the slash at the end of the URL or you will get errors.
+
 ### Running the app
 
 Before starting make sure you have Node.js version **^16**.
