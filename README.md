@@ -28,3 +28,7 @@ Before starting make sure you have Node.js version **^16**.
 ## Troubleshooting and Support
 
 If you encounter any issues when setting up the environment variables, please reach out to me on Discord at “Coffee L. Burger#5667”. I will be happy to assist you further. =)
+
+## Disclaimer
+
+This repository and its contents were created by Jose Moran Urena, a developer in partnership with ZEBEDEE LLC. The contents of this repository are the sole responsibility of Jose Moran Urena and do not necessarily reflect the views or policies of ZEBEDEE LLC.
