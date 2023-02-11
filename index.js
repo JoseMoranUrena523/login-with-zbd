@@ -10,20 +10,32 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-// Generate PKCE code challenge and verifier
-function generatePKCECodeChallenge() {
-  // generate code verifier
-  const codeVerifier = crypto.randomBytes(32).toString('base64');
-  // generate code challenge
-  const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64');
-  return { codeVerifier, codeChallenge };
+function sha256(buffer) {
+  return crypto.createHash('sha256').update(buffer).digest();
+}
+
+function base64URLEncode(str) {
+  return str
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+}
+
+function GeneratePKCE() {
+  const verifier = base64URLEncode(crypto.randomBytes(32));
+
+  if (verifier) {
+    const challenge = base64URLEncode(sha256(verifier));
+    return { challenge, verifier };
+  }
 }
 
 app.get('/login', (req, res) => {
   // redirect user to ZEBEDEE authorization endpoint
   const clientId = "209b5bac-0636-4d5e-8398-8e8a21382999";
   const redirectUri = "https://loginwithzbd.glitch.me/callback";
-  const { codeVerifier, codeChallenge } = generatePKCECodeChallenge();
+  const { codeVerifier, codeChallenge } = GeneratePKCE();
   const scope = "user";
   const url = `https://api.zebedee.io/v0/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${codeChallenge}&scope=${scope}`;
   // save code verifier to the session for later use
@@ -42,7 +54,7 @@ app.get('/callback', async (req, res) => {
     redirect_uri: "https://loginwithzbd.glitch.me/callback",
     code_verifier: codeVerifier,
     client_id: "209b5bac-0636-4d5e-8398-8e8a21382999",
-    client_secret: "e2d5dcd6-ff46-4058-8c04-a979aea70e47"
+    client_secret: "e3f731ea-128d-4f3b-9eff-f2cdefe05421"
   };
   try {
     const response = await fetch('https://api.zebedee.io/v0/oauth2/token', {
