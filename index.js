@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const app = express();
 
 app.use(session({
-  secret: 'asecretcool',
+  secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
 }));
@@ -32,28 +32,26 @@ function GeneratePKCE() {
 }
 
 app.get('/login', (req, res) => {
-  // redirect user to ZEBEDEE authorization endpoint
-  const clientId = "209b5bac-0636-4d5e-8398-8e8a21382999";
-  const redirectUri = "https://loginwithzbd.glitch.me/callback";
-  const { codeVerifier, codeChallenge } = GeneratePKCE();
+  const clientId = process.env.ZEBEDEE_CLIENT_ID;
+  const redirectUri = `${process.env.HOST_URI}/callback`;
+  const { verifier, challenge } = GeneratePKCE();
   const scope = "user";
-  const url = `https://api.zebedee.io/v0/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${codeChallenge}&scope=${scope}`;
-  // save code verifier to the session for later use
-  req.session.codeVerifier = codeVerifier;
+  const url = `https://api.zebedee.io/v0/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&code_challenge_method=S256&code_challenge=${challenge}&scope=${scope}`;
+  
+  req.session.codeVerifier = verifier;
   res.redirect(url);
 });
 
 app.get('/callback', async (req, res) => {
-  // handle callback from ZEBEDEE
   const { code, state } = req.query;
   const codeVerifier = req.session.codeVerifier;
-  // exchange authorization code for access token
+  
   const body = {
     grant_type: 'authorization_code',
     code: code,
-    redirect_uri: "https://loginwithzbd.glitch.me/callback",
+    redirect_uri: `${process.env.HOST_URI}/callback`,
     code_verifier: codeVerifier,
-    client_id: "209b5bac-0636-4d5e-8398-8e8a21382999",
+    client_id: process.env.ZEBEDEE_CLIENT_ID,
     client_secret: "e3f731ea-128d-4f3b-9eff-f2cdefe05421"
   };
   try {
@@ -63,10 +61,9 @@ app.get('/callback', async (req, res) => {
       body: JSON.stringify(body)
     });
     const data = await response.json();
-    console.log(data);
-    // save access token to the session
+    
     req.session.accessToken = data.access_token;
-    // retrieve ZEBEDEE Gamertag
+    
     const gamertagResponse = await fetch('https://api.zebedee.io/v0/oauth2/user', {
       headers: {
         'Content-Type': 'application/json',
@@ -75,11 +72,19 @@ app.get('/callback', async (req, res) => {
     });
     const gamertagData = await gamertagResponse.json();
     console.log(gamertagData);
-    const gamertag = gamertagData.username;
+    const gamertag = gamertagData.data.gamertag;
     res.redirect(`/?gamertag=${gamertag}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error exchanging code for access token');
+  }
+});
+
+app.get('/', async (req, res) => {
+  if (req.query.gamertag === null) {
+    res.redirect(`/login`);
+  } else {
+    res.send(`Hey, ${req.query.gamertag}! This is an example so you can modify this code like line 76 for a redirect with the gamertag, );
   }
 });
 
