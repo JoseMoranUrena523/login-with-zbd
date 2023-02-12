@@ -63,8 +63,6 @@ app.get('/callback', async (req, res) => {
     const data = await response.json();
     console.log(data);
     
-    const refreshToken = data.refresh_token;
-    
     req.session.accessToken = data.access_token;
     
     const gamertagResponse = await fetch('https://api.zebedee.io/v0/oauth2/user', {
@@ -77,7 +75,7 @@ app.get('/callback', async (req, res) => {
     console.log(gamertagData);
     const gamertag = gamertagData.data.gamertag;
     // res.redirect(`/?gamertag=${gamertag}`);
-    res.redirect(`https://www.2048bitcoin.world/?gamertag=${gamertag}&rt=${refreshToken}`);
+    res.redirect(`https://www.2048bitcoin.world/?gamertag=${gamertag}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error exchanging code for access token');
