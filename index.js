@@ -71,7 +71,7 @@ app.get('/callback', async (req, res) => {
       }
     });
     const gamertagData = await gamertagResponse.json();
-    console.log(gamertagData.data);
+    console.log(gamertagData);
     const gamertag = gamertagData.data.gamertag;
     // res.redirect(`/?gamertag=${gamertag}`);
     res.redirect(`https://www.2048bitcoin.world/?gamertag=${gamertag}`);
