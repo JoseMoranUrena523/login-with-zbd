@@ -61,6 +61,7 @@ app.get('/callback', async (req, res) => {
       body: JSON.stringify(body)
     });
     const data = await response.json();
+    console.log(data);
     
     req.session.accessToken = data.access_token;
     
