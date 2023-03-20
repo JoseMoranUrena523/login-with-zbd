@@ -74,8 +74,7 @@ app.get('/callback', async (req, res) => {
     const gamertagData = await gamertagResponse.json();
     console.log(gamertagData);
     const gamertag = gamertagData.data.gamertag;
-    // res.redirect(`/?gamertag=${gamertag}`);
-    res.redirect(`https://www.2048bitcoin.world/?gamertag=${gamertag}`);
+    res.redirect(`/?gamertag=${gamertag}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error exchanging code for access token');
@@ -86,7 +85,7 @@ app.get('/', async (req, res) => {
   if (!req.query.gamertag) {
     res.redirect(`/login`);
   } else {
-    res.send(`Hey, ${req.query.gamertag}! This is an example so you can modify this code like line 76 for a redirect with the gamertag, or even this message!`);
+    res.send(`Hey, ${req.query.gamertag}! This is an example so you can modify this code like line 77 to include a redirect with the gamertag, or to change this message!!`);
   }
 });
 
